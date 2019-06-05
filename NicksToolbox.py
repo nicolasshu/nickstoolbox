@@ -110,7 +110,7 @@ def flatten(input_list):
 def DrawBoundary(x,y):
     import matplotlib.pyplot as plt
     import numpy as np
-    
+
     xmin = np.min(x); ymin = np.min(y)
     xmax = np.max(x); ymax = np.max(y)
 
@@ -128,5 +128,37 @@ def DrawBoundary(x,y):
     plt.plot(right_x,right_y,'k-')
     plt.plot(bot_x,bot_y,'k-')
 #-------------------------------------------------------------------------------
+def SendEmail(msg,to='nicolas.s.shu@gmail.com'):
+
+    from string import Template
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+    import smtplib
+    from getpass import getpass
+    MY_ADDRESS = "nicolas.s.shu@gmail.com"
+    PASSWORD = getpass()
+
+    #Port Numbers for Gmail
+    portSSL = 465
+    portTLS = 587
+
+    s = smtplib.SMTP(host='smtp.gmail.com',port = 587)
+    s.starttls()
+    s.login(MY_ADDRESS,PASSWORD)
+
+    #Initialize the message handle
+
+    msg_handle = MIMEMultipart()
+
+    #Setting up parameters of the email handle
+    msg_handle['From'] = MY_ADDRESS
+    msg_handle['To'] = to
+    msg_handle['Subject']="Task has been completed"
+
+    #Adding the message body
+    msg_handle.attach(MIMEText(msg,'plain'))
+    s.send_message(msg_handle)
+    s.quit()
+
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
