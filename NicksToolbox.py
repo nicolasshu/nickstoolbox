@@ -128,37 +128,40 @@ def DrawBoundary(x,y):
     plt.plot(right_x,right_y,'k-')
     plt.plot(bot_x,bot_y,'k-')
 #-------------------------------------------------------------------------------
-def SendEmail(msg,to='nicolas.s.shu@gmail.com'):
+class SendEmail():
+    def __init__(self,msg,to='nicolas.s.shu@gmail.com',password=None):
 
-    from string import Template
-    from email.mime.multipart import MIMEMultipart
-    from email.mime.text import MIMEText
-    import smtplib
-    from getpass import getpass
-    MY_ADDRESS = "nicolas.s.shu@gmail.com"
-    PASSWORD = getpass()
+        from string import Template
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.text import MIMEText
+        import smtplib
+        from getpass import getpass
+        MY_ADDRESS = "nicolas.s.shu@gmail.com"
+        if password is None:
+            password = getpass()
 
-    #Port Numbers for Gmail
-    portSSL = 465
-    portTLS = 587
+        #Port Numbers for Gmail
+        portSSL = 465
+        portTLS = 587
 
-    s = smtplib.SMTP(host='smtp.gmail.com',port = 587)
-    s.starttls()
-    s.login(MY_ADDRESS,PASSWORD)
+        self.s = smtplib.SMTP(host='smtp.gmail.com',port = 587)
+        self.s.starttls()
+        self.s.login(MY_ADDRESS,password)
 
-    #Initialize the message handle
+        #Initialize the message handle
 
-    msg_handle = MIMEMultipart()
+        self.msg_handle = MIMEMultipart()
 
-    #Setting up parameters of the email handle
-    msg_handle['From'] = MY_ADDRESS
-    msg_handle['To'] = to
-    msg_handle['Subject']="Task has been completed"
+        #Setting up parameters of the email handle
+        self.msg_handle['From'] = MY_ADDRESS
+        self.msg_handle['To'] = to
+        self.msg_handle['Subject']="Task has been completed"
 
-    #Adding the message body
-    msg_handle.attach(MIMEText(msg,'plain'))
-    s.send_message(msg_handle)
-    s.quit()
+        #Adding the message body
+        msg_handle.attach(MIMEText(msg,'plain'))
+    def send_message(self):
+        self.s.send_message(msg_handle)
+        self.s.quit()
 
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
