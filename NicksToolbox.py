@@ -158,9 +158,9 @@ class SendEmail():
         self.msg_handle['Subject']="Task has been completed"
 
         #Adding the message body
-        msg_handle.attach(MIMEText(msg,'plain'))
+        self.msg_handle.attach(MIMEText(msg,'plain'))
     def send_message(self):
-        self.s.send_message(msg_handle)
+        self.s.send_message(self.msg_handle)
         self.s.quit()
 
 #-------------------------------------------------------------------------------
