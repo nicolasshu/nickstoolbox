@@ -5,7 +5,7 @@ with open("README.md","r") as fh:
 
 setuptools.setup(
         name='nickstoolbox',
-        version='0.1',
+        version='0.2',
         # scripts=['nickstoolbox'],
         author="Nicolas Shu",
         author_email="nicolas.s.shu@gmail.com",

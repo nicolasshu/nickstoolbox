@@ -2,13 +2,19 @@
 # LIBRARIES USED
 ################################################################################
 import resource                 # Used for Memory
+import pydub 
+import datetime 
+import time 
+import matplotlib.pyplot as plt 
+import numpy as np 
+
 name = "nickstoolbox"
+
 ################################################################################
 # FUNCTIONS
 ################################################################################
 #-------------------------------------------------------------------------------
 def HowsMyMemory():
-    import datetime, resource
     print("TIME:    "+str(datetime.datetime.now()))
     print('Memory usage: %s (kb)' % resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
 #-------------------------------------------------------------------------------
@@ -42,8 +48,6 @@ def ScatterWithHist(x, y, scatterstyle='bo', bin_no = None, cx = 'red', cy = 'cy
     #   on the y-axis.
     #   This was originally suggested by Dr. Gari Clifford as a sanity check to
     #   make sure that your data was properly distributed.
-    import numpy    as np
-    import matplotlib.pyplot as plt
     fig, ax1 = plt.subplots()
 
     ax1.plot(x,y,scatterstyle)
@@ -61,19 +65,16 @@ def ScatterWithHist(x, y, scatterstyle='bo', bin_no = None, cx = 'red', cy = 'cy
     ax3.tick_params('x',colors=cy)
 #-------------------------------------------------------------------------------
 def ActivateLatex():
-    import matplotlib.pyplot as plt
     plt.rc('text', usetex=True)
     plt.rc('font', family='serif')
 #-------------------------------------------------------------------------------
 class Plot:
     def __init__(self):
-        import matplotlib.pyplot as plt
+        x = 1
     def ActivateLatex(self):
-        import matplotlib.pyplot as plt
         plt.rc('text', usetex=True)
         plt.rc('font', family='serif')
     def SetTicks(self,size=20):
-        import matplotlib.pyplot as plt
         plt.yticks(size=size)
         plt.xticks(size=size)
 
@@ -83,7 +84,6 @@ class Plot:
         plt.tight_layout()
 #-------------------------------------------------------------------------------
 def SetTicks(size=20):
-    import matplotlib.pyplot as plt
     plt.yticks(size=size)
     plt.xticks(size=size)
 #-------------------------------------------------------------------------------
@@ -108,9 +108,6 @@ def flatten(input_list):
     return flat_list
 #-------------------------------------------------------------------------------
 def DrawBoundary(x,y):
-    import matplotlib.pyplot as plt
-    import numpy as np
-
     xmin = np.min(x); ymin = np.min(y)
     xmax = np.max(x); ymax = np.max(y)
 
@@ -165,5 +162,26 @@ class SendEmail():
         self.s.quit()
 
 #-------------------------------------------------------------------------------
+class MP3:
+    def read(self,f, normalized=False):
+        """MP3 to numpy array"""
+        a = pydub.AudioSegment.from_mp3(f)
+        y = np.array(a.get_array_of_samples())
+        if a.channels == 2:
+            y = y.reshape((-1, 2))
+        if normalized:
+            return a.frame_rate, np.float32(y) / 2**15
+        else:
+            return a.frame_rate, y
+
+    def write(self, f, sr, x, normalized=False):
+        """numpy array to MP3"""
+        channels = 2 if (x.ndim == 2 and x.shape[1] == 2) else 1
+        if normalized:  # normalized array - each item should be a float in [-1, 1)
+            y = np.int16(x * 2 ** 15)
+        else:
+            y = np.int16(x)
+        song = pydub.AudioSegment(y.tobytes(), frame_rate=sr, sample_width=2, channels=channels)
+        song.export(f, format="mp3", bitrate="320k")
 #-------------------------------------------------------------------------------
 

@@ -1,0 +1,2 @@
+Version 0.2
+Added MP3 read/write function
